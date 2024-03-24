@@ -131,7 +131,6 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
             _mbtiles = snapshot.data;
             final metadata = _mbtiles!.getMetadata();
             _mapController = MapController();
-            //50.408888888889 9.3672222222222
             return Column(
               children: <Widget>[
                 Padding(
