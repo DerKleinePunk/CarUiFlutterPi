@@ -145,7 +145,7 @@ packages:
     source: hosted
     version: "0.6.7"
   latlong2:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: latlong2
       sha256: "18712164760cee655bc790122b0fd8f3d5b3c36da2cb7bf94b68a197fbb0811b"
@@ -217,7 +217,7 @@ packages:
     source: hosted
     version: "0.8.0"
   mbtiles:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mbtiles
       sha256: a48b045840354abf6ed41aad99d3154a74b5723ba82e58a16bedfc18941043d1
@@ -478,7 +478,7 @@ packages:
     source: hosted
     version: "3.1.1"
   vector_map_tiles:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_map_tiles
       sha256: "79394902d04cefe6f93eb0a80afe48d8b76fec8d90cf6d6bd5a7e34abe577d1c"
@@ -510,7 +510,7 @@ packages:
     source: hosted
     version: "2.0.0"
   vector_tile_renderer:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_tile_renderer
       sha256: b58fa02b472ced87de00de2b4d5837576239bddb21b562481f25bde39bd117ae
