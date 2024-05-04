@@ -75,6 +75,7 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
   void dispose() {
     _controllerGeoLong.dispose();
     _controllerGeoLat.dispose();
+    _mbtiles?.dispose();
     super.dispose();
   }
 
@@ -218,12 +219,5 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // close the open database connection
-    _mbtiles?.dispose();
-    super.dispose();
   }
 }
