@@ -22,6 +22,7 @@ dependencies:
   mbtiles:
   vector_map_tiles:
   vector_tile_renderer:
+  shared_preferences: ^2.2.3
   
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,1 @@
-liblua5.1-0-dev
 libsqlite3-dev
-libshp-dev
-libboost-program-options-dev
-libboost-filesystem-dev
-libboost-system-dev
-libboost-iostreams-dev
-rapidjson-dev
-zlib1g-dev

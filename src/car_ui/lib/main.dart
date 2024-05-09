@@ -1,15 +1,22 @@
+import 'package:car_ui/shared/app_config.dart';
 import 'package:car_ui/shared/local_style_reader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mbtiles/mbtiles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_map_tiles_mbtiles/vector_map_tiles_mbtiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
 
+late AppConfig appConfig;
+
 void main() {
-  runApp(const MyApp());
+   SharedPreferences.getInstance().then((instance) {
+   appConfig = AppConfig(preferences: instance);
+   runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -43,7 +50,7 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
   final Future<MbTiles> _futureMbtiles = _initMbTiles();
   MbTiles? _mbtiles;
 
-  final _theme = vtr.ProvidedThemes.lightTheme();
+  //final _theme = vtr.ProvidedThemes.lightTheme();
   late TextEditingController _controllerGeoLong;
   late TextEditingController _controllerGeoLat;
 
@@ -55,10 +62,8 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
     /*final file = await copyAssetToFile(
       'assets/mbtiles/malta-vector.mbtiles',
     );*/
-    //Todo do to Config
     return MbTiles(
-        mbtilesPath:
-            "/home/punky/develop/CarUiFlutterPi/maps/hessen-latest.mbtiles",
+        mbtilesPath:appConfig.mapFile,
         gzip: true);
     //return MbTiles(mbtilesPath: "/home/punky/develop/CarUiFlutterPi/maps/malta-vector.mbtiles", gzip: false);
   }
@@ -102,8 +107,7 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
             logger: const vtr.Logger.console())
         .read();*/
     return LocalStyleReader(
-            fileName:
-                '/home/punky/develop/CarUiFlutterPi/resources/tilemaker/style.json',
+            fileName:appConfig.styleFile,
             logger: const vtr.Logger.console())
         .read();
   }
