@@ -2,11 +2,14 @@
 
 https://medium.com/snapp-embedded/flutter-custom-devices-c682dcb0acf1
 
+
+flutterpi_tool build --arch=arm64 --cpu=pi4 --release
+
 usermod -a -G render pi
 usermod -a -G seat pi
 
 flutter-pi --vulkan -> Enable Vulkan
-
+fo
 cmake .. -DENABLE_VULKAN=ON
 
 XDG_RUNTIME_DIR is not set in the environment
