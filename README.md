@@ -23,6 +23,14 @@ cmake --build . -j $(nproc)
 # Test Map with Browser
 ./tilemaker-server /home/punky/develop/CarUiFlutterPi/maps/hessen-latest.mbtiles
 ```
+### MBTiles Raster
+
+https://www.orrbodies.com/tutorial/generating-tiles-qgis/
+
+## Config
+
+On Windows Config File
+Users\YOUR-USER-NAME\AppData\Roaming\com.COMPANYNAME\APPNAME\shared-preferences.json
 
 ## Build
 

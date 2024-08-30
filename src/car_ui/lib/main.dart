@@ -1,21 +1,18 @@
+import 'package:car_ui/common/attribution_widget.dart';
 import 'package:car_ui/shared/app_config.dart';
-import 'package:car_ui/shared/local_style_reader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_map_mbtiles/flutter_map_mbtiles.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mbtiles/mbtiles.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
-import 'package:vector_map_tiles_mbtiles/vector_map_tiles_mbtiles.dart';
-import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
 
 late AppConfig appConfig;
 
 void main() {
-   SharedPreferences.getInstance().then((instance) {
-   appConfig = AppConfig(preferences: instance);
-   runApp(const MyApp());
+  SharedPreferences.getInstance().then((instance) {
+    appConfig = AppConfig(preferences: instance);
+    runApp(const MyApp());
   });
 }
 
@@ -31,24 +28,23 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           fontFamily: 'Georgia'),
-      home: const VectorMapTilesMbTilesPage(title: 'Mainpage'),
+      home: const MbTilesPage(title: 'Mainpage'),
     );
   }
 }
 
-class VectorMapTilesMbTilesPage extends StatefulWidget {
-  const VectorMapTilesMbTilesPage({super.key, required this.title});
+class MbTilesPage extends StatefulWidget {
+  const MbTilesPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<VectorMapTilesMbTilesPage> createState() =>
-      _VectorMapTilesMbTilesPageState();
+  State<MbTilesPage> createState() => _MbTilesPageState();
 }
 
-class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
+class _MbTilesPageState extends State<MbTilesPage> {
   final Future<MbTiles> _futureMbtiles = _initMbTiles();
-  MbTiles? _mbtiles;
+  MbTiles? _mbTiles;
 
   //final _theme = vtr.ProvidedThemes.lightTheme();
   late TextEditingController _controllerGeoLong;
@@ -62,55 +58,29 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
     /*final file = await copyAssetToFile(
       'assets/mbtiles/malta-vector.mbtiles',
     );*/
-    return MbTiles(
-        mbtilesPath:appConfig.mapFile,
-        gzip: true);
+    return MbTiles(mbtilesPath: appConfig.mapFile);
     //return MbTiles(mbtilesPath: "/home/punky/develop/CarUiFlutterPi/maps/malta-vector.mbtiles", gzip: false);
   }
 
   @override
   void initState() {
     super.initState();
-    _initStyle();
     _controllerGeoLong = TextEditingController();
     _controllerGeoLat = TextEditingController();
+    _controllerGeoLong.text = "8.495092";
+    _controllerGeoLat.text = "50.096096";
+    _initMbTiles();
   }
 
   @override
   void dispose() {
     _controllerGeoLong.dispose();
     _controllerGeoLat.dispose();
-    _mbtiles?.dispose();
+    _mbTiles?.dispose();
     super.dispose();
   }
 
-  Style? _style;
   Object? _error;
-
-  void _initStyle() async {
-    try {
-      _style = await _readStyle();
-    } catch (e, stack) {
-      // ignore: avoid_print
-      print(e);
-      // ignore: avoid_print
-      print(stack);
-      _error = e;
-    }
-    setState(() {});
-  }
-
-  Future<Style> _readStyle() {
-    /*return StyleReader(
-            uri: 'http://localhost:8080/style.json',
-            apiKey: "",
-            logger: const vtr.Logger.console())
-        .read();*/
-    return LocalStyleReader(
-            fileName:appConfig.styleFile,
-            logger: const vtr.Logger.console())
-        .read();
-  }
 
   MapController? _mapController;
   bool _mapReady = false;
@@ -121,8 +91,6 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
   Widget build(BuildContext context) {
     if (_error != null) {
       return Expanded(child: Text(_error!.toString()));
-    } else if (_style == null) {
-      return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(
       appBar: AppBar(
@@ -133,8 +101,9 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
         future: _futureMbtiles,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            _mbtiles = snapshot.data;
-            final metadata = _mbtiles!.getMetadata();
+            _mbTiles = snapshot.data;
+            final metadata = _mbTiles!.getMetadata();
+            metadata.bounds;
             _mapController = MapController();
             return Column(
               children: <Widget>[
@@ -151,7 +120,7 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
                                 fontFamily: "KlokanTech Noto Sans Bold"),
                           )),
                 Row(children: [
-                   Flexible(
+                  Flexible(
                       child: TextFormField(
                           controller: _controllerGeoLat,
                           decoration:
@@ -179,36 +148,25 @@ class _VectorMapTilesMbTilesPageState extends State<VectorMapTilesMbTilesPage> {
                           _mapReady = true;
                           //_mapController!.mapEventStream.listen((evt) {});
                         },
-                        minZoom: 2,
-                        maxZoom: 20,
-                        initialZoom: 13,
-                        initialCenter:
-                            metadata.defaultCenter ?? const LatLng(0, 0),
+                        minZoom: 0,
+                        maxZoom: 18,
+                        initialZoom: 5,
+                        initialCenter: const LatLng(50.096096, 8.495092),
+                        /*cameraConstraint: CameraConstraint.contain(
+                              bounds: LatLngBounds(LatLng(metadata.bounds!.bottom, metadata.bounds!.left),
+                                  LatLng(metadata.bounds!.top, metadata.bounds!.right)))
+                                           */
                       ),
                       children: [
-                        VectorTileLayer(
-                          //theme: _theme,
-                          theme: _style!.theme,
-                          tileProviders: TileProviders({
-                            'openmaptiles': MbTilesVectorTileProvider(
-                              mbtiles: _mbtiles!,
-                            ),
-                          }),
-                          // do not set maximumZoom here to the metadata.maxZoom
-                          // or tiles won't get over-zoomed.
-                          maximumZoom: 14,
-                          logCacheStats: false,
-                          layerMode: VectorTileLayerMode.vector,
+                        TileLayer(
+                          tileProvider: MbTilesTileProvider(mbtiles: _mbTiles!),
+                          /*tileBounds: LatLngBounds(
+                              LatLng(
+                                  metadata.bounds!.top, metadata.bounds!.left),
+                              LatLng(metadata.bounds!.bottom,
+                                  metadata.bounds!.right)),*/
                         ),
-                        RichAttributionWidget(
-                          attributions: [
-                            TextSourceAttribution(
-                              'OpenStreetMap contributors',
-                              onTap: () => launchUrl(Uri.parse(
-                                  'https://openstreetmap.org/copyright')),
-                            ),
-                          ],
-                        ),
+                        const OsmAttributionWidget(),
                       ]),
                 ),
               ],
