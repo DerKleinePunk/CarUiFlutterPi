@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: 'Georgia'),
       scrollBehavior: AppScrollBehavior(),
-      home: Scaffold( body: const PageViewExample())//const MainPage(), //const MbTilesPage(title: 'Mainpage'),
+      home: Scaffold(backgroundColor: Colors.black,
+       body: const PageViewExample())//const MainPage(), //const MbTilesPage(title: 'Mainpage'),
     );
   }
 }
