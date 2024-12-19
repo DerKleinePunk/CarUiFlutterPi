@@ -17,11 +17,12 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_map: ^7.0.2
   flutter_map_mbtiles: ^1.0.3
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.3.4
   latlong2:
   url_launcher:
   mbtiles:
   neon_widgets: ^2.0.0
+  geekyants_flutter_gauges: ^1.0.4
 
 dev_dependencies:
   flutter_test:

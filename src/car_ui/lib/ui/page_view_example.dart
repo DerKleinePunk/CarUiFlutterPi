@@ -1,5 +1,7 @@
+import 'package:car_ui/ui/mid_circle_radial_gauge.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:neon_widgets/neon_widgets.dart';
 
 class PageViewExample extends StatefulWidget {
@@ -14,12 +16,14 @@ class _PageViewExampleState extends State<PageViewExample>
   late PageController _pageViewController;
   late TabController _tabController;
   int _currentPageIndex = 0;
+  int _pageCount = 0;
 
   @override
   void initState() {
     super.initState();
     _pageViewController = PageController();
-    _tabController = TabController(length: 3, vsync: this);
+    _pageCount = 4;
+    _tabController = TabController(length: _pageCount, vsync: this);
   }
 
   @override
@@ -53,22 +57,50 @@ class _PageViewExampleState extends State<PageViewExample>
             ),
             Center(
               child: NeonLine(
-                spreadColor: Colors.brown,
+                spreadColor: Colors.blue,
                 lightSpreadRadius: 30,
                 lightBlurRadius: 90,
                 lineWidth: 400,
                 lineHeight: 10,
-                lineColor: Colors.brown.shade100,
+                lineColor: Colors.blue.shade100,
               ),
             ),
             Center(
               child: NeonText(text: 'Third Page'),
+            ),
+            Center(
+              child: //MyCustomRadialGauge(),
+                  Column(children: [
+                RadialGauge(
+                  track: RadialTrack(
+                    start: 0,
+                    end: 200,
+                    steps: 10
+                  ),
+                  valueBar: [
+                    RadialValueBar(value: 10, color: Colors.red),
+                    RadialValueBar(
+                        value: 100, color: Colors.blue, radialOffset: -10)
+                  ],
+                  needlePointer: [
+                    NeedlePointer(
+                      value: 30,
+                    ),
+                  ],
+                ),
+                LinearGauge(
+                    steps: 10,
+                    start: 0,
+                    end: 100,
+                    rulers: RulerStyle(rulerPosition: RulerPosition.center))
+              ]),
             ),
           ],
         ),
         PageIndicator(
           tabController: _tabController,
           currentPageIndex: _currentPageIndex,
+          pageCount: _pageCount,
           onUpdateCurrentPageIndex: _updateCurrentPageIndex,
           isOnDesktopAndWeb: _isOnDesktopAndWeb,
         ),
@@ -127,9 +159,11 @@ class PageIndicator extends StatelessWidget {
     required this.currentPageIndex,
     required this.onUpdateCurrentPageIndex,
     required this.isOnDesktopAndWeb,
+    required this.pageCount,
   });
 
   final int currentPageIndex;
+  final int pageCount;
   final TabController tabController;
   final void Function(int) onUpdateCurrentPageIndex;
   final bool isOnDesktopAndWeb;
@@ -169,7 +203,7 @@ class PageIndicator extends StatelessWidget {
             splashRadius: 16.0,
             padding: EdgeInsets.zero,
             onPressed: () {
-              if (currentPageIndex == 2) {
+              if (currentPageIndex == pageCount - 1) {
                 return;
               }
               onUpdateCurrentPageIndex(currentPageIndex + 1);
