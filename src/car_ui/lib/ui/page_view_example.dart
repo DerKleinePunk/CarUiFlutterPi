@@ -71,23 +71,25 @@ class _PageViewExampleState extends State<PageViewExample>
             Center(
               child: //MyCustomRadialGauge(),
                   Column(children: [
-                RadialGauge(
-                  track: RadialTrack(
-                    start: 0,
-                    end: 200,
-                    steps: 10
-                  ),
+                NeonContainer(
+                    child: RadialGauge(
+                  track: RadialTrack(start: 0, end: 200, steps: 10),
                   valueBar: [
-                    RadialValueBar(value: 10, color: Colors.red),
                     RadialValueBar(
-                        value: 100, color: Colors.blue, radialOffset: -10)
+                        value: 100,
+                        gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [Colors.green, Colors.blue])),
+                    /*RadialValueBar(
+                        value: 100, color: Colors.blue, radialOffset: -10)*/
                   ],
                   needlePointer: [
                     NeedlePointer(
                       value: 30,
                     ),
                   ],
-                ),
+                )),
                 LinearGauge(
                     steps: 10,
                     start: 0,
