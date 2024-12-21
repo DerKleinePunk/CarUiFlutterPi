@@ -23,6 +23,10 @@ dependencies:
   mbtiles:
   neon_widgets: ^2.0.0
   geekyants_flutter_gauges: ^1.0.4
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      path: plugins/window_size
 
 dev_dependencies:
   flutter_test:
