@@ -20,3 +20,8 @@ source ~/.bashrc
 flutter-pi /tmp/car_ui
 
 scp -r ./build/flutter_assets/ pi@192.168.2.51:/tmp/car_ui/
+
+# Draw on Flutter with C++ ?!?
+https://api.flutter.dev/flutter/widgets/Texture-class.html
+https://github.com/mogol/opengl_texture_widget_example
+https://medium.com/@german_saprykin/opengl-with-texture-widget-f919743d25d9
