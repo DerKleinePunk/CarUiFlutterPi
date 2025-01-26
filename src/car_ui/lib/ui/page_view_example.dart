@@ -22,7 +22,7 @@ class _PageViewExampleState extends State<PageViewExample>
   void initState() {
     super.initState();
     _pageViewController = PageController();
-    _pageCount = 4;
+    _pageCount = 5;
     _tabController = TabController(length: _pageCount, vsync: this);
   }
 
@@ -97,6 +97,12 @@ class _PageViewExampleState extends State<PageViewExample>
                     rulers: RulerStyle(rulerPosition: RulerPosition.center))
               ]),
             ),
+            Center(
+              child: Container(
+                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.amber),
+                child: Text(':)'),
+              ),
+            )
           ],
         ),
         PageIndicator(
