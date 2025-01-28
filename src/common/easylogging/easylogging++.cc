@@ -2701,7 +2701,7 @@ PerformanceTracker::~PerformanceTracker(void) {
       data.init(this);
       data.m_formattedTimeTaken = formattedTime;
       PerformanceTrackingCallback* callback = nullptr;
-      for (const std::pair<std::string, base::type::PerformanceTrackingCallbackPtr>& h
+      for (const std::pair<std::string, base::type::PerformanceTrackingCallbackPtr> h
            : ELPP->m_performanceTrackingCallbacks) {
         callback = h.second.get();
         if (callback != nullptr && callback->enabled()) {
@@ -2728,7 +2728,7 @@ void PerformanceTracker::checkpoint(const std::string& id, const char* file, bas
     data.m_func = func;
     data.m_formattedTimeTaken = formattedTime;
     PerformanceTrackingCallback* callback = nullptr;
-    for (const std::pair<std::string, base::type::PerformanceTrackingCallbackPtr>& h
+    for (const std::pair<std::string, base::type::PerformanceTrackingCallbackPtr> h
          : ELPP->m_performanceTrackingCallbacks) {
       callback = h.second.get();
       if (callback != nullptr && callback->enabled()) {
