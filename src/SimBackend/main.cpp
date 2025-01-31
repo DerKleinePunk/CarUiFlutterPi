@@ -14,6 +14,20 @@
 #include <fcntl.h>
 #include <libudev.h> 
 
+#include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <grpcpp/grpcpp.h>
+#include <grpcpp/health_check_service_interface.h>
+#include "absl/flags/flag.h"
+#include "absl/flags/parse.h"
+#include "absl/strings/str_format.h"
+
+#ifdef BAZEL_BUILD
+#include "examples/protos/helloworld.grpc.pb.h"
+#else
+#include "helloworld.grpc.pb.h"
+#endif
+
+
 #include "../common/version.hpp"
 #include "../common/easylogging/easylogging++.h"
 #include "Controller/SocketController.hpp"

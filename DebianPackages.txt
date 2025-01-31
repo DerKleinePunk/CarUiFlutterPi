@@ -1,1 +1,3 @@
 libsqlite3-dev
+clang
+libc++-dev
