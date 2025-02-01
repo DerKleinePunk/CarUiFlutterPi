@@ -13,7 +13,7 @@ endif()
 
 get_filename_component(hw_proto "../protos/helloworld.proto" ABSOLUTE)
 get_filename_component(hw_proto_path "${hw_proto}" PATH)
-add_library(proto-objects OBJECT "${hw_proto}")
+#add_library(proto-objects OBJECT "${hw_proto}")
 
 #target_link_libraries(proto-objects PUBLIC protobuf::libprotobuf gRPC::grpc++)
 
@@ -23,14 +23,17 @@ set(PROTO_IMPORT_DIRS "${hw_proto_path}")
 message(STATUS "Using ProtoImport ${PROTO_IMPORT_DIRS} ")
 
 #target_include_directories(proto-objects PUBLIC "$<BUILD_INTERFACE:${PROTO_BINARY_DIR}>")
+INCLUDE_DIRECTORIES($<BUILD_INTERFACE:${PROTO_BINARY_DIR}>)
+
+add_executable(${project_BIN} ${SRCS} ${hw_proto} ${easylogging_SRCS})
 
 protobuf_generate(
-    TARGET proto-objects
+    TARGET ${project_BIN}
     IMPORT_DIRS ${PROTO_IMPORT_DIRS}
     PROTOC_OUT_DIR "${PROTO_BINARY_DIR}")
 
 protobuf_generate(
-    TARGET proto-objects
+    TARGET ${project_BIN}
     LANGUAGE grpc
     GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc
     PLUGIN "protoc-gen-grpc=\$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
@@ -38,5 +41,7 @@ protobuf_generate(
     PROTOC_OUT_DIR "${PROTO_BINARY_DIR}")
 
 ## Define the executable
-add_executable(${project_BIN} ${SRCS} ${easylogging_SRCS})
+
 #target_add_protobuf(${project_BIN} "../protos/helloworld.proto")
+TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE systemd)
+TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE protobuf::libprotobuf gRPC::grpc++ gRPC::grpc++_reflection)
