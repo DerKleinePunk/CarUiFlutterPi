@@ -19,6 +19,9 @@
 
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+set(CMAKE_POLICY_DEFAULT_CMP0074 NEW)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -80,6 +83,7 @@ elseif(GRPC_FETCHCONTENT)
     # For the purpose of testing, we override the tag used to the commit
     # that's currently under test.
     GIT_TAG        ${GRPC_VERSION_TAG})
+  set(FETCHCONTENT_QUIET OFF)
   FetchContent_MakeAvailable(grpc)
 
   # Since FetchContent uses add_subdirectory under the hood, we can use
@@ -93,6 +97,8 @@ elseif(GRPC_FETCHCONTENT)
   else()
     set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:grpc_cpp_plugin>)
   endif()
+  
+
 else()
   # This branch assumes that gRPC and all its dependencies are already installed
   # on this system, so they can be located by find_package().
@@ -123,3 +129,4 @@ else()
     set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
   endif()
 endif()
+

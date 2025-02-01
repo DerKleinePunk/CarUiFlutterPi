@@ -21,12 +21,7 @@
 #include "absl/flags/parse.h"
 #include "absl/strings/str_format.h"
 
-#ifdef BAZEL_BUILD
-#include "examples/protos/helloworld.grpc.pb.h"
-#else
-#include "helloworld.grpc.pb.h"
-#endif
-
+#include <generated/helloworld.grpc.pb.h>
 
 #include "../common/version.hpp"
 #include "../common/easylogging/easylogging++.h"

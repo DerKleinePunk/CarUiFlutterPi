@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
 # Main CMake
 
 #
@@ -11,6 +11,7 @@ ENDIF()
 #Build Cmake Environment
 SET(PKG_CONFIG_USE_CMAKE_PREFIX_PATH TRUE)
 find_package(PkgConfig)
+
 include(CheckCXXCompilerFlag)
 include(ExternalProject)
 include(CheckTypeSize)
@@ -36,12 +37,42 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 SET (EXECUTABLE_OUTPUT_PATH "${MAINFOLDER}/bin/${TARGET}")
 
+find_package(gRPC CONFIG REQUIRED)
+find_package(Protobuf REQUIRED)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-SET (GRPC_FETCHCONTENT TRUE)
-SET (GRPC_VERSION_TAG v1.70.0)
-SET (protobuf_INSTALL OFF)
-SET (utf8_range_ENABLE_INSTALL OFF)
-include(GPRCCommon)
+
+#SET (GRPC_FETCHCONTENT TRUE)
+#SET (GRPC_VERSION_TAG v1.70.0)
+#SET (protobuf_INSTALL OFF)
+#SET (utf8_range_ENABLE_INSTALL OFF)
+#SET (protobuf_BUILD_TESTS OFF)
+#SET (protobuf_BUILD_CONFORMANCE OFF)
+#SET (protobuf_BUILD_EXAMPLES OFF)
+#SET (gRPC_BUILD_TESTS OFF)
+#SET (gRPC_BUILD_CODEGEN ON) # for grpc_cpp_plugin
+#SET (gRPC_BUILD_GRPC_CPP_PLUGIN ON) # we want to use only C++ plugin
+#SET (gRPC_BUILD_CSHARP_EXT OFF)
+#SET (gRPC_BUILD_GRPC_CSHARP_PLUGIN OFF)
+#SET (gRPC_BUILD_GRPC_NODE_PLUGIN OFF)
+#SET (gRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN OFF)
+#SET (gRPC_BUILD_GRPC_PHP_PLUGIN OFF)
+#SET (gRPC_BUILD_GRPC_PYTHON_PLUGIN OFF)
+#SET (gRPC_BUILD_GRPC_RUBY_PLUGIN OFF)
+
+#include(GPRCCommon)
+include(TargetProtoBuf)
+message(STATUS "Using protobuf ${Protobuf_VERSION}")
+message(STATUS "Using gRPC ${gRPC_VERSION}")
+
+set(_GRPC_GRPCPP gRPC::grpc++)
+if(CMAKE_CROSSCOMPILING)
+  find_program(_GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin)
+else()
+  set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
+endif()
+
+message(STATUS "Using gRPC ${_GRPC_CPP_PLUGIN_EXECUTABLE}")
 
 ADD_SUBDIRECTORY(src/common/easylogging)
 ADD_SUBDIRECTORY(src/SimBackend)
