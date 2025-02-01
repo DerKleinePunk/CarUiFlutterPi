@@ -25,3 +25,8 @@ scp -r ./build/flutter_assets/ pi@192.168.2.51:/tmp/car_ui/
 https://api.flutter.dev/flutter/widgets/Texture-class.html
 https://github.com/mogol/opengl_texture_widget_example
 https://medium.com/@german_saprykin/opengl-with-texture-widget-f919743d25d9
+
+# Dart
+
+dart pub global activate protoc_plugin
+protoc /home/punky/develop/CarUiFlutterPi/src/protos/helloworld.proto --dart_out=grpc:lib/services -I/home/punky/develop/CarUiFlutterPi/src/protos

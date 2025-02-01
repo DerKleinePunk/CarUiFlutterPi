@@ -1,4 +1,7 @@
+import 'package:car_ui/services/greeterservicehandler.dart';
+import 'package:car_ui/services/helloworld.pb.dart';
 import 'package:flutter/material.dart';
+import 'package:grpc/grpc.dart';
 
 class OverlayWindowMne extends StatefulWidget {
   const OverlayWindowMne({super.key, required this.top});
@@ -62,9 +65,19 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                             GestureDetector(
                                 child: Icon(Icons.access_alarm,
                                     color: Colors.amber),
-                                onTap: () {
+                                onTap: () async {
+                                  final greeterService = GreeterServiceHandler();
+                                  final request = HelloRequest()..name = 'flutter';
+                                  String message;
+                                  try {
+                                    final response = await greeterService.sayHello(request);
+                                    message = response.message;
+                                  } on GrpcError catch (exp) {
+                                    message = exp.message!;
+                                  } 
+                                  if(!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("access_alarm")));
+                                      SnackBar(content: Text(message)));
                                   setState(() {
                                     _exanded = false;
                                   });

@@ -37,6 +37,9 @@ class GreeterServiceImpl final : public helloworld::Greeter::Service {
                   helloworld::HelloReply* reply) override {
     std::string prefix("Hello ");
     reply->set_message(prefix + request->name());
+
+    std::cout << "Say Hello was called" << std::endl;
+
     return grpc::Status::OK;
   }
 };
