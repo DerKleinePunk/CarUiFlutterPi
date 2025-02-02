@@ -30,3 +30,7 @@ https://medium.com/@german_saprykin/opengl-with-texture-widget-f919743d25d9
 
 dart pub global activate protoc_plugin
 protoc /home/punky/develop/CarUiFlutterPi/src/protos/helloworld.proto --dart_out=grpc:lib/services -I/home/punky/develop/CarUiFlutterPi/src/protos
+
+flutter pub upgrade --major-versions
+
+dart run ffigen

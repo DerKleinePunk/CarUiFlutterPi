@@ -1,3 +1,5 @@
+import 'package:car_ui/services/carpcconnector.dart';
+import 'package:car_ui/services/generated_carpcconnector.dart';
 import 'package:car_ui/services/greeterservicehandler.dart';
 import 'package:car_ui/services/helloworld.pb.dart';
 import 'package:flutter/material.dart';
@@ -59,9 +61,12 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                                   Icons.favorite,
                                   color: Colors.amber,
                                 ),
-                                onTap: () => ScaffoldMessenger.of(context)
+                                onTap: ()  {
+                                  final libtest = CarPcConnector();
+                                  ScaffoldMessenger.of(context)
                                     .showSnackBar(
-                                        SnackBar(content: Text("favorite")))),
+                                        SnackBar(content: Text(libtest.version)));
+                                        }),
                             GestureDetector(
                                 child: Icon(Icons.access_alarm,
                                     color: Colors.amber),
