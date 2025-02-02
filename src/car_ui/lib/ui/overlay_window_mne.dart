@@ -71,14 +71,15 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                                 child: Icon(Icons.access_alarm,
                                     color: Colors.amber),
                                 onTap: () async {
-                                  final greeterService = GreeterServiceHandler();
+                                  final greeterService = GreeterServiceHandler.unixPort("/tmp/SimBackend.sock");
                                   final request = HelloRequest()..name = 'flutter';
-                                  String message;
+                                  String message = "empty";
                                   try {
                                     final response = await greeterService.sayHello(request);
                                     message = response.message;
+                                    greeterService.sayHelloStreamReply(request);
                                   } on GrpcError catch (exp) {
-                                    message = exp.message!;
+                                    message = exp.message ?? exp.codeName;
                                   } 
                                   if(!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(

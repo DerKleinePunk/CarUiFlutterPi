@@ -6,6 +6,7 @@ import 'package:car_ui/ui/overlay_window_mne.dart';
 import 'package:car_ui/ui/page_view_example.dart';
 import 'package:flutter/material.dart';
 import 'package:neon_widgets/neon_widgets.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 import 'package:window_size/window_size.dart';
@@ -31,14 +32,25 @@ void setupWindow() {
   }
 }
 
-void main() {
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupWindow(); //Only used in Desktop App
+  var packageInfo = await PackageInfo.fromPlatform();
+  var version =
+      "${packageInfo.packageName} ${packageInfo.version} (${packageInfo.buildNumber})";
+  debugPrint = (String? message, {int? wrapWidth}) =>
+      debugPrintSynchronouslyWithText(message, version, wrapWidth: wrapWidth);
   SharedPreferences.getInstance().then((instance) {
     appConfig = AppConfig(preferences: instance);
-    WidgetsFlutterBinding.ensureInitialized();
-    setupWindow(); //Only used in Desktop App
+    debugPrint("Starting $version");
     runApp(const MyApp());
   });
+}
+
+void debugPrintSynchronouslyWithText(String? message, String version,
+    {int? wrapWidth}) {
+  message = "[${DateTime.now()} - $version]: $message";
+  debugPrintSynchronously(message, wrapWidth: wrapWidth);
 }
 
 class MyApp extends StatelessWidget {

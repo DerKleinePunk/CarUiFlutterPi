@@ -26,6 +26,8 @@ https://api.flutter.dev/flutter/widgets/Texture-class.html
 https://github.com/mogol/opengl_texture_widget_example
 https://medium.com/@german_saprykin/opengl-with-texture-widget-f919743d25d9
 
+https://www.thesocialrobot.org/posts/grpc-brain-2/
+
 # Dart
 
 dart pub global activate protoc_plugin

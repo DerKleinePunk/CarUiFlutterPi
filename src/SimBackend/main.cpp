@@ -29,23 +29,80 @@
 
 char socketPath[] = "/tmp/SimBackend.sock";
 
+volatile std::sig_atomic_t g_shutdown_flag = 0;
+
 INITIALIZE_EASYLOGGINGPP
 
+class HelloReactor final
+    : public grpc::ServerWriteReactor<helloworld::HelloReply> {
+ public:
+  HelloReactor()
+      : messages_to_send_(3) {
+    res_.set_message(std::string(5, '#'));
+    std::cout << "ctor\n";
+    Write();
+  }
+
+  void Write() {
+    absl::MutexLock lock(&mu_);
+    StartWrite(&res_);
+    --messages_to_send_;
+    write_start_time_ = absl::Now();
+  }
+
+  void OnWriteDone(bool ok) override {
+    bool more = false;
+    {
+      absl::MutexLock lock(&mu_);
+      std::cout << "Write #" << messages_to_send_ << " done (Ok: " << ok
+                << "): " << absl::Now() - *write_start_time_ << "\n";
+      write_start_time_ = std::nullopt;
+      more = ok && messages_to_send_ > 0;
+    }
+    if (more) {
+      Write();
+    } else {
+      Finish(grpc::Status::OK);
+      std::cout << "Done sending messages\n";
+    }
+  }
+
+  void OnDone() override { 
+    std::cout << "Channel Closed\n";
+    delete this; 
+  }
+
+ private:
+  helloworld::HelloReply res_;
+  size_t messages_to_send_;
+  std::optional<absl::Time> write_start_time_;
+  absl::Mutex mu_;
+};
+
 // Logic and data behind the server's behavior.
-class GreeterServiceImpl final : public helloworld::Greeter::Service {
-  grpc::Status SayHello(grpc::ServerContext* context, const helloworld::HelloRequest* request,
+class GreeterServiceImpl final : public helloworld::Greeter::CallbackService {
+  grpc::ServerUnaryReactor* SayHello(grpc::CallbackServerContext* context, const helloworld::HelloRequest* request,
                   helloworld::HelloReply* reply) override {
     std::string prefix("Hello ");
     reply->set_message(prefix + request->name());
 
     std::cout << "Say Hello was called" << std::endl;
 
-    return grpc::Status::OK;
+    auto* reactor = context->DefaultReactor();
+    reactor->Finish(grpc::Status::OK);
+    return reactor;
+  }
+
+  grpc::ServerWriteReactor<helloworld::HelloReply>* SayHelloStreamReply(
+      grpc::CallbackServerContext* /*context*/,
+      const helloworld::HelloRequest* request) override {
+    return new HelloReactor();
   }
 };
 
 void RunServer(uint16_t port) {
   std::string server_address = absl::StrFormat("0.0.0.0:%d", port);
+  std::string server_address2 = absl::StrFormat("unix:%s", socketPath);
   GreeterServiceImpl service;
 
   grpc::EnableDefaultHealthCheckService(true);
@@ -53,9 +110,16 @@ void RunServer(uint16_t port) {
   grpc::ServerBuilder builder;
   // Listen on the given address without any authentication mechanism.
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+  builder.AddListeningPort(server_address2, grpc::InsecureServerCredentials());
   // Register "service" as the instance through which we'll communicate with
   // clients. In this case it corresponds to an *synchronous* service.
   builder.RegisterService(&service);
+  //Set Alives
+  builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_TIME_MS,10 * 60 * 1000 /*10 min*/);
+  builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_TIMEOUT_MS,20 * 1000 /*20 sec*/);
+  builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_PERMIT_WITHOUT_CALLS, 1);
+  builder.AddChannelArgument(GRPC_ARG_HTTP2_MIN_RECV_PING_INTERVAL_WITHOUT_DATA_MS,10 * 1000 /*10 sec*/);
+
   // Finally assemble the server.
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
   std::cout << "Server listening on " << server_address << std::endl;
@@ -68,7 +132,8 @@ void RunServer(uint16_t port) {
 int main(int argc, char** argv)
 {
     int exit_code = EXIT_SUCCESS;
-    int server_socket = -1;
+    //int server_socket = -1;
+    // Sample with Systemdd sieh https://github.com/grpc/grpc/tree/master/examples/cpp/systemd_socket_activation
 
     std::cout << "Starting Sim Backend " << PROJECT_VER << std::endl;
     START_EASYLOGGINGPP(argc, argv);
@@ -76,7 +141,7 @@ int main(int argc, char** argv)
     el::Helpers::setThreadName("Main");
     el::Loggers::getLogger(ELPP_DEFAULT_LOGGER);
 
-    unlink(socketPath); //If already exits
+    /*unlink(socketPath); //If already exits
     server_socket = socket(AF_UNIX, SOCK_STREAM, PF_UNSPEC);
     sockaddr_un name;
     memset(&name, 0, sizeof(sockaddr_un));
@@ -99,7 +164,7 @@ int main(int argc, char** argv)
     functionResult = socketController->Start();
     if (functionResult != 0) {
         //Todo Error
-    }
+    }*/
 
     RunServer(5001);
 
@@ -111,9 +176,9 @@ int main(int argc, char** argv)
         std::cin >> input;
     }*/
 
-    delete socketController;
+    //delete socketController;
     
-    unlink(socketPath);
+    //unlink(socketPath);
 
     return exit_code;
 }

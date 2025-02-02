@@ -4,3 +4,4 @@ libsqlite3-dev
 libprotobuf-dev
 libc++-dev
 libgrpc++-dev
+libgrpc-dev
