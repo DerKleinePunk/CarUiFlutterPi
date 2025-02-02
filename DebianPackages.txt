@@ -1,5 +1,6 @@
 clang
 protobuf-compiler-grpc
 libsqlite3-dev
+libprotobuf-dev
 libc++-dev
 libgrpc++-dev

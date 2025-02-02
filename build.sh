@@ -46,4 +46,37 @@ InstallPackage(){
 	fi
 }
 
+sudo apt-get --yes update
+
+InstallPackage git
+InstallPackage git-lfs
+
+while read LINE; do
+     InstallPackage $LINE
+done < $DEPENSFILE
+
+sudo apt-get --yes dist-upgrade
+sudo apt-get autoremove -y
+
+DIRECTORY="buildrelease"
+if [ ! -d "$DIRECTORY" ]; then
+	mkdir $DIRECTORY
+fi
+cd $DIRECTORY
+
+cmake .. -DCMAKE_BUILD_TYPE=Release -DTARGET=Linux -DENABLE_CPPCHECK=OFF
+exitCode=$?
+if [ $exitCode -ne 0 ] ; then
+	echo "cmake give an Error"
+	exit $exitCode
+fi
+
+cmake --build . -j $(nproc)
+exitCode=$?
+if [ $exitCode -ne 0 ] ; then
+	echo "cmake give an Error"
+	exit $exitCode
+fi
+cd ..
+
 SCRIPTEXIT
