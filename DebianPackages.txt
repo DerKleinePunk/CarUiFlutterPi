@@ -5,3 +5,4 @@ libprotobuf-dev
 libc++-dev
 libgrpc++-dev
 libgrpc-dev
+libudev-dev

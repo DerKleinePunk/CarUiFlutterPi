@@ -36,3 +36,7 @@ protoc /home/punky/develop/CarUiFlutterPi/src/protos/helloworld.proto --dart_out
 flutter pub upgrade --major-versions
 
 dart run ffigen
+
+## Serial
+
+https://blog.mbedded.ninja/programming/operating-systems/linux/linux-serial-ports-using-c-cpp/
