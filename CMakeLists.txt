@@ -37,10 +37,12 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 SET (EXECUTABLE_OUTPUT_PATH "${MAINFOLDER}/bin/${TARGET}")
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
+# https://bugs.launchpad.net/ubuntu/+source/grpc/+bug/1935709 missing files
 find_package(gRPC CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+find_package(udev REQUIRED)
 
 #SET (GRPC_FETCHCONTENT TRUE)
 #SET (GRPC_VERSION_TAG v1.70.0)
@@ -72,7 +74,7 @@ else()
   set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
 endif()
 
-message(STATUS "Using gRPC ${_GRPC_CPP_PLUGIN_EXECUTABLE}")
+message(STATUS "Using gRPC EXECUTABLE ${_GRPC_CPP_PLUGIN_EXECUTABLE}")
 
 ADD_SUBDIRECTORY(src/common/easylogging)
 ADD_SUBDIRECTORY(src/SimBackend)

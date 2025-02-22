@@ -81,7 +81,7 @@ class _MyCustomRadialGaugePainter extends CustomPainter {
   final num maxValue;
   final num current;
 
-  double _fraction;
+  final double _fraction;
 
   _MyCustomRadialGaugePainter(this._fraction, this.maxValue, this.current);
 

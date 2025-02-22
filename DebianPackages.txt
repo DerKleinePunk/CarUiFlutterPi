@@ -6,3 +6,4 @@ libc++-dev
 libgrpc++-dev
 libgrpc-dev
 libudev-dev
+libc-ares-dev

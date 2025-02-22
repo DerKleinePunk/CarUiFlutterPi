@@ -20,10 +20,11 @@ get_filename_component(hw_proto_path "${hw_proto}" PATH)
 set(PROTO_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/proto-objects.dir/protos")
 set(PROTO_IMPORT_DIRS "${hw_proto_path}")
 
-message(STATUS "Using ProtoImport ${PROTO_IMPORT_DIRS} ")
+message(STATUS "Using ProtoImport ${PROTO_IMPORT_DIRS}")
 
 #target_include_directories(proto-objects PUBLIC "$<BUILD_INTERFACE:${PROTO_BINARY_DIR}>")
-INCLUDE_DIRECTORIES($<BUILD_INTERFACE:${PROTO_BINARY_DIR}>)
+INCLUDE_DIRECTORIES($<BUILD_INTERFACE:${PROTO_BINARY_DIR}> )
+INCLUDE_DIRECTORIES(${UDEV_INCLUDE_DIR})
 
 add_executable(${project_BIN} ${SRCS} ${hw_proto} ${easylogging_SRCS})
 
