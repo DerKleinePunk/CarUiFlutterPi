@@ -43,6 +43,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake"
 find_package(gRPC CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(udev REQUIRED)
+find_package(absl REQUIRED)
 
 #SET (GRPC_FETCHCONTENT TRUE)
 #SET (GRPC_VERSION_TAG v1.70.0)

@@ -46,3 +46,5 @@ protobuf_generate(
 #target_add_protobuf(${project_BIN} "../protos/helloworld.proto")
 TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE systemd)
 TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE protobuf::libprotobuf gRPC::grpc++ gRPC::grpc++_reflection)
+#missing absl::check absl::log
+TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE absl::flags absl::flags_parse)

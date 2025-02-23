@@ -5,6 +5,9 @@
 #define ELPP_CURR_FILE_PERFORMANCE_LOGGER_ID ELPP_DEFAULT_LOGGER
 #endif
 
+#include <chrono>
+#include <condition_variable>
+
 #include "gRPCController.hpp"
 #include "../../common/easylogging/easylogging++.h"
 
@@ -16,6 +19,8 @@
 #include <absl/strings/str_format.h>
 
 #include <helloworld.grpc.pb.h>
+
+using namespace std::chrono_literals;
 
 char socketPath[] = "/tmp/SimBackend.sock";
 
@@ -90,6 +95,9 @@ class GreeterServiceImpl final : public helloworld::Greeter::CallbackService {
 
 void gRPCController::Loop(/* args */)
 {
+    el::Helpers::setThreadName("gRPCController");
+    _cv.notify_all();
+
     // Wait for the server to shutdown. Note that some other thread must be
     // responsible for shutting down the server for this call to ever return.
     _server->Wait();
@@ -131,7 +139,10 @@ void gRPCController::Run(uint16_t port) {
     std::cout << "Server listening on " << server_address << std::endl;
     std::cout << "Server listening on " << server_address2 << std::endl;
   
+    std::unique_lock<std::mutex> startUpWait(_mutex);
     _loopThread = std::thread(&gRPCController::Loop, this);
+    _cv.wait_for(startUpWait, 500ms);
+    //_server->Wait();
 
   }
 

@@ -36,7 +36,10 @@
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin/",
-            "environment": [],
+            "environment": [
+                {"name" :"GRPC_VERBOSITY", "value":"info"},
+                {"name": "GRPC_TRACE", "value": "all"}
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

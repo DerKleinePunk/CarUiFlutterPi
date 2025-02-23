@@ -19,9 +19,16 @@
 #include "Controller/SocketController.hpp"
 #include "Controller/gRPCController.hpp"
 
+#include "absl/flags/flag.h"
+#include "absl/flags/parse.h"
+#include "absl/strings/str_format.h"
+
 volatile std::sig_atomic_t g_shutdown_flag = 0;
 
 INITIALIZE_EASYLOGGINGPP
+
+ABSL_FLAG(uint16_t, v, 0, "verbose Level");
+ABSL_FLAG(std::string, c, 0, "config File");
 
 int main(int argc, char** argv)
 {
@@ -31,6 +38,7 @@ int main(int argc, char** argv)
 
     std::cout << "Starting Sim Backend " << PROJECT_VER << std::endl;
     START_EASYLOGGINGPP(argc, argv);
+    //absl::ParseCommandLine(argc, argv);
 
     el::Helpers::setThreadName("Main");
     el::Loggers::getLogger(ELPP_DEFAULT_LOGGER);
