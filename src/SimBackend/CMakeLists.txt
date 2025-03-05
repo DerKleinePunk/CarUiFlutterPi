@@ -28,23 +28,23 @@ INCLUDE_DIRECTORIES(${UDEV_INCLUDE_DIR})
 
 add_executable(${project_BIN} ${SRCS} ${hw_proto} ${easylogging_SRCS})
 
-protobuf_generate(
-    TARGET ${project_BIN}
-    IMPORT_DIRS ${PROTO_IMPORT_DIRS}
-    PROTOC_OUT_DIR "${PROTO_BINARY_DIR}")
+#protobuf_generate_cpp(
+#    TARGET ${project_BIN}
+#    IMPORT_DIRS ${PROTO_IMPORT_DIRS}
+#    PROTOC_OUT_DIR "${PROTO_BINARY_DIR}")
 
-protobuf_generate(
-    TARGET ${project_BIN}
-    LANGUAGE grpc
-    GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc
-    PLUGIN "protoc-gen-grpc=\$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
-    IMPORT_DIRS ${PROTO_IMPORT_DIRS}
-    PROTOC_OUT_DIR "${PROTO_BINARY_DIR}")
+#protobuf_generate_cpp(
+#    TARGET ${project_BIN}
+#    LANGUAGE grpc
+#    GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc
+#    PLUGIN "protoc-gen-grpc=\$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
+#    IMPORT_DIRS ${PROTO_IMPORT_DIRS}
+#    PROTOC_OUT_DIR "${PROTO_BINARY_DIR}")
 
 ## Define the executable
 
-#target_add_protobuf(${project_BIN} "../protos/helloworld.proto")
+target_add_protobuf(${project_BIN} ${hw_proto_path})
 TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE systemd)
-TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE protobuf::libprotobuf gRPC::grpc++ gRPC::grpc++_reflection)
+TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE protobuf::libprotobuf)
 #missing absl::check absl::log
 TARGET_LINK_LIBRARIES(${project_BIN} PRIVATE absl::flags absl::flags_parse)

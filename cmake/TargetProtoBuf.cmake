@@ -14,6 +14,8 @@ if(NOT ARGN)
     return()
 endif()
 
+message(STATUS "genearate file ${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}")
+
 set(_protobuf_include_path -I . -I ${_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR})
 foreach(FIL ${ARGN})
     get_filename_component(ABS_FIL ${FIL} ABSOLUTE)
@@ -30,6 +32,8 @@ foreach(FIL ${ARGN})
         message(FATAL_ERROR "Can not find target grpc_cpp_plugin")
     endif()
     set(_gRPC_CPP_PLUGIN $<TARGET_FILE:grpc_cpp_plugin>)
+
+    message(STATUS "genearate file ${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}")
 
     add_custom_command(
     OUTPUT  "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.grpc.pb.cc"
