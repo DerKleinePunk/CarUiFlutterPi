@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(${UDEV_INCLUDE_DIR})
 
 set(PROTO_FILES
     "../protos/helloworld.proto"
+    "../protos/carconnect.proto"
 )
 
 get_target_property(grpc_cpp_plugin_location gRPC::grpc_cpp_plugin LOCATION)

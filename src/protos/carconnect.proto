@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package carconnect;
+
+enum SystemId {
+  ALL = 0;
+  BASE = 1;
+  IO = 2;
+  SOUND = 3;
+}
+
+enum SystemState {
+    UNKNOWN = 0;
+    ERROR = 1;
+    GOOD = 2;
+    OFF = 3;
+}
+
+service CarService {
+    rpc GetState (StateRequest) returns (StateReply) {}
+}
+
+message StateRequest {
+    SystemId systemId = 1;
+}
+
+message StateReply {
+    repeated CurrentState states = 1;
+}
+
+message CurrentState {
+    SystemId systemId = 1;
+    SystemState state = 2;
+    string errortext = 3;
+}
