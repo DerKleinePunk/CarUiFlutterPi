@@ -94,10 +94,9 @@ else()
 
   message(STATUS "${CMAKE_MODULE_PATH}")
   find_package(gRPC CONFIG REQUIRED)
+  include(TargetProtoBuf)
 endif()
 
-
-include(TargetProtoBuf)
 message(STATUS "Using protobuf version ${Protobuf_VERSION}")
 message(STATUS "Using gRPC version ${gRPC_VERSION}")
 

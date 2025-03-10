@@ -8,3 +8,5 @@ libgrpc++-dev
 libgrpc-dev
 libudev-dev
 libc-ares-dev
+wget
+cmake
