@@ -26,6 +26,11 @@ char socketPath[] = "/tmp/SimBackend.sock";
 
 //https://github.com/grpc/grpc/blob/v1.66.0/examples/cpp/route_guide/route_guide_server.cc
 
+//TODO clean this stupy code
+class HelloReactor;
+
+HelloReactor* g_helloReactor = nullptr;
+
 class HelloReactor final
     : public grpc::ServerWriteReactor<helloworld::HelloReply> {
  public:
@@ -34,10 +39,19 @@ class HelloReactor final
     res_.set_message(std::string(5, '#'));
     std::cout << "ctor\n";
     Write();
+    g_helloReactor = this;
   }
 
   void Write() {
     absl::MutexLock lock(&mu_);
+    StartWrite(&res_);
+    --messages_to_send_;
+    write_start_time_ = absl::Now();
+  }
+
+  void WriteText(const std::string& message) {
+    absl::MutexLock lock(&mu_);
+    res_.set_message(message);
     StartWrite(&res_);
     --messages_to_send_;
     write_start_time_ = absl::Now();
@@ -62,6 +76,7 @@ class HelloReactor final
 
   void OnDone() override {
     std::cout << "Channel Closed\n";
+    g_helloReactor = nullptr;
     delete this;
   }
 
@@ -71,6 +86,8 @@ class HelloReactor final
   std::optional<absl::Time> write_start_time_;
   absl::Mutex mu_;
 };
+
+
 
 // Logic and data behind the server's behavior.
 class GreeterServiceImpl final : public helloworld::Greeter::CallbackService {
@@ -159,4 +176,11 @@ void gRPCController::Run(uint16_t port) {
 
         _loopThread.join();
     }
+  }
+
+  void gRPCController::SendTestMessage() {
+    if(g_helloReactor == nullptr) return;
+
+    auto text = std::string("From Console");
+    g_helloReactor->WriteText(text);
   }

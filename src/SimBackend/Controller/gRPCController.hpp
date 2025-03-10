@@ -22,4 +22,6 @@ public:
 
     void Run(uint16_t port);
     void Stop();
+
+    void SendTestMessage();
 };

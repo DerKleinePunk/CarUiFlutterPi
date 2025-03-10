@@ -37,8 +37,8 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin/",
             "environment": [
-                {"name" :"GRPC_VERBOSITY", "value":"info"},
-                {"name": "GRPC_TRACE", "value": "all"}
+                //{"name" :"GRPC_VERBOSITY", "value":"info"},
+                //{"name": "GRPC_TRACE", "value": "all"}
             ],
             "externalConsole": false,
             "MIMode": "gdb",

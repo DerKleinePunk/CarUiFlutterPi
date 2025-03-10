@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <fcntl.h>
-#include <libudev.h> 
+#include <libudev.h>
 
 #include "../common/version.hpp"
 #include "../common/easylogging/easylogging++.h"
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     memset(&name, 0, sizeof(sockaddr_un));
     name.sun_family = AF_UNIX;
     strncpy(name.sun_path, socketPath, sizeof(name.sun_path) - 1);
-    
+
     auto functionResult = bind(server_socket, reinterpret_cast<const sockaddr*>(&name), sizeof(sockaddr_un));
     if(functionResult == -1) {
         //Todo Error
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     }
 
     auto socketController = new SocketController(server_socket);
-    
+
     functionResult = socketController->Start();
     if (functionResult != 0) {
         //Todo Error
@@ -77,12 +77,15 @@ int main(int argc, char** argv)
     std::cin >> input;
     while(input != "q") {
         std::cin >> input;
+        if(input == "s") {
+            test.SendTestMessage();
+        }
     }
 
     test.Stop();
-    
+
     //delete socketController;
-    
+
     //unlink(socketPath);
 
     return exit_code;

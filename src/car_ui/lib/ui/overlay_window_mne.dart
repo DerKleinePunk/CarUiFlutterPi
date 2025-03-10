@@ -16,6 +16,7 @@ class OverlayWindowMne extends StatefulWidget {
 class _OverlayWindowMne extends State<OverlayWindowMne> {
   bool _exanded = false;
   double _windowWidth = 100;
+  ResponseStream<HelloReply>? _responseStream;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,9 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                                     final response =
                                         await greeterService.sayHello(request);
                                     message = response.message;
-                                    greeterService.sayHelloStreamReply(request);
+                                    _responseStream = greeterService
+                                        .sayHelloStreamReply(request);
+                                    _responseStream?.listen(_newDataFromStream);
                                   } on GrpcError catch (exp) {
                                     message = exp.message ?? exp.codeName;
                                   }
@@ -98,5 +101,9 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                                 })
                           ])
                     : Container(color: Colors.red))));
+  }
+
+  void _newDataFromStream(HelloReply value) {
+    debugPrint("GPRC new Message ${value.message}");
   }
 }
