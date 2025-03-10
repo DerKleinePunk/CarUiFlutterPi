@@ -19,7 +19,7 @@ cmake --build . -j $(nproc)
 # change compress to none in config
 ./tilemaker /home/punky/develop/CarUiFlutterPi/maps/hessen-latest.osm.pbf /home/punky/develop/CarUiFlutterPi/maps/hessen-latest.mbtiles
 
-# copy server/static to build dir 
+# copy server/static to build dir
 # Test Map with Browser
 ./tilemaker-server /home/punky/develop/CarUiFlutterPi/maps/hessen-latest.mbtiles
 ```
@@ -41,7 +41,20 @@ cd /media/hddIntern/devtest
 Build script is written for Debian based Linux (Test only with rasbian or debian)
 
 ```bash
-wget -O build.sh https://raw.githubusercontent.com/DerKleinePunk/AnOtherAutomationServer/master/build.sh
+wget -O build.sh https://raw.githubusercontent.com/DerKleinePunk/CarUiFlutterPi/master/build.sh
 chmod +x build.sh
 ./build.sh
 ```
+
+## Dependency
+
+Debian sie DebianPackages.txt
+
+[Flutter](https://docs.flutter.dev/get-started/install/linux/desktop)
+[Flutter-PI](https://github.com/ardera/flutterpi_tool)
+
+## Debuging
+
+flutterpi_tool devices add pi@bootpc
+
+flutterpi_tool run -d bootpc

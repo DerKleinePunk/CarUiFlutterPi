@@ -10,3 +10,4 @@ libudev-dev
 libc-ares-dev
 wget
 cmake
+libcurl4-openssl-dev

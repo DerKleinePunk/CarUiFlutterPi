@@ -15,6 +15,7 @@ class OverlayWindowMne extends StatefulWidget {
 
 class _OverlayWindowMne extends State<OverlayWindowMne> {
   bool _exanded = false;
+  double _windowWidth = 100;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
     String? swipeDirection;
     return Positioned(
         top: widget.top,
-        left: size.width - (_exanded ? 100 : 10),
+        left: size.width - (_exanded ? _windowWidth : 10),
         child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
@@ -51,7 +52,7 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
             },
             child: SizedBox(
                 height: _exanded ? size.height - 60 : 40,
-                width: _exanded ? 100 : 10,
+                width: _exanded ? _windowWidth : 10,
                 child: _exanded
                     ? ListView(
                         padding: const EdgeInsets.all(8),
@@ -60,28 +61,35 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                                 child: Icon(
                                   Icons.favorite,
                                   color: Colors.amber,
+                                  size: 50,
                                 ),
-                                onTap: ()  {
+                                onTap: () {
                                   final libtest = CarPcConnector();
-                                  ScaffoldMessenger.of(context)
-                                    .showSnackBar(
-                                        SnackBar(content: Text(libtest.version)));
-                                        }),
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(libtest.version)));
+                                }),
                             GestureDetector(
-                                child: Icon(Icons.access_alarm,
-                                    color: Colors.amber),
+                                child: Icon(
+                                  Icons.access_alarm,
+                                  color: Colors.amber,
+                                  size: 50,
+                                ),
                                 onTap: () async {
-                                  final greeterService = GreeterServiceHandler.unixPort("/tmp/SimBackend.sock");
-                                  final request = HelloRequest()..name = 'flutter';
+                                  final greeterService =
+                                      GreeterServiceHandler.unixPort(
+                                          "/tmp/SimBackend.sock");
+                                  final request = HelloRequest()
+                                    ..name = 'flutter';
                                   String message = "empty";
                                   try {
-                                    final response = await greeterService.sayHello(request);
+                                    final response =
+                                        await greeterService.sayHello(request);
                                     message = response.message;
                                     greeterService.sayHelloStreamReply(request);
                                   } on GrpcError catch (exp) {
                                     message = exp.message ?? exp.codeName;
-                                  } 
-                                  if(!context.mounted) return;
+                                  }
+                                  if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(message)));
                                   setState(() {

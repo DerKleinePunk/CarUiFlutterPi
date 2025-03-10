@@ -60,9 +60,9 @@ class HelloReactor final
     }
   }
 
-  void OnDone() override { 
+  void OnDone() override {
     std::cout << "Channel Closed\n";
-    delete this; 
+    delete this;
   }
 
  private:
@@ -95,17 +95,44 @@ class GreeterServiceImpl final : public helloworld::Greeter::CallbackService {
 
 void gRPCController::Loop(/* args */)
 {
-    el::Helpers::setThreadName("gRPCController");
-    _cv.notify_all();
+  el::Helpers::setThreadName("gRPCController");
 
-    // Wait for the server to shutdown. Note that some other thread must be
-    // responsible for shutting down the server for this call to ever return.
-    _server->Wait();
+  GreeterServiceImpl service;
+
+  std::string server_address = absl::StrFormat("0.0.0.0:%d", _tcpServerPort);
+  std::string server_address2 = absl::StrFormat("unix:%s", socketPath);
+
+  grpc::EnableDefaultHealthCheckService(true);
+  //grpc::reflection::InitProtoReflectionServerBuilderPlugin();
+  grpc::ServerBuilder builder;
+  // Listen on the given address without any authentication mechanism.
+  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+  builder.AddListeningPort(server_address2, grpc::InsecureServerCredentials());
+  // Register "service" as the instance through which we'll communicate with
+  // clients. In this case it corresponds to an *synchronous* service.
+  builder.RegisterService(&service);
+  //Set Alives
+  builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_TIME_MS,10 * 60 * 1000 /*10 min*/);
+  builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_TIMEOUT_MS,20 * 1000 /*20 sec*/);
+  builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_PERMIT_WITHOUT_CALLS, 1);
+  builder.AddChannelArgument(GRPC_ARG_HTTP2_MIN_RECV_PING_INTERVAL_WITHOUT_DATA_MS,10 * 1000 /*10 sec*/);
+
+  // Finally assemble the server.
+  _server = builder.BuildAndStart();
+  //std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+  std::cout << "Server listening on " << server_address << std::endl;
+  std::cout << "Server listening on " << server_address2 << std::endl;
+
+  _cv.notify_all();
+  // Wait for the server to shutdown. Note that some other thread must be
+  // responsible for shutting down the server for this call to ever return.
+  _server->Wait();
 }
 
 
 gRPCController::gRPCController(/* args */)
 {
+  el::Loggers::getLogger(ELPP_DEFAULT_LOGGER);
 }
 
 gRPCController::~gRPCController()
@@ -113,36 +140,15 @@ gRPCController::~gRPCController()
 }
 
 void gRPCController::Run(uint16_t port) {
-    GreeterServiceImpl service;
 
-    std::string server_address = absl::StrFormat("0.0.0.0:%d", port);
-    std::string server_address2 = absl::StrFormat("unix:%s", socketPath);
-  
-    grpc::EnableDefaultHealthCheckService(true);
-    grpc::reflection::InitProtoReflectionServerBuilderPlugin();
-    grpc::ServerBuilder builder;
-    // Listen on the given address without any authentication mechanism.
-    builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-    builder.AddListeningPort(server_address2, grpc::InsecureServerCredentials());
-    // Register "service" as the instance through which we'll communicate with
-    // clients. In this case it corresponds to an *synchronous* service.
-    builder.RegisterService(&service);
-    //Set Alives
-    builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_TIME_MS,10 * 60 * 1000 /*10 min*/);
-    builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_TIMEOUT_MS,20 * 1000 /*20 sec*/);
-    builder.AddChannelArgument(GRPC_ARG_KEEPALIVE_PERMIT_WITHOUT_CALLS, 1);
-    builder.AddChannelArgument(GRPC_ARG_HTTP2_MIN_RECV_PING_INTERVAL_WITHOUT_DATA_MS,10 * 1000 /*10 sec*/);
-  
-    // Finally assemble the server.
-    _server = builder.BuildAndStart();
-    //std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-    std::cout << "Server listening on " << server_address << std::endl;
-    std::cout << "Server listening on " << server_address2 << std::endl;
-  
-    std::unique_lock<std::mutex> startUpWait(_mutex);
-    _loopThread = std::thread(&gRPCController::Loop, this);
-    _cv.wait_for(startUpWait, 500ms);
-    //_server->Wait();
+  _tcpServerPort = port;
+
+  std::unique_lock<std::mutex> startUpWait(_mutex);
+  _loopThread = std::thread(&gRPCController::Loop, this);
+  if(_cv.wait_for(startUpWait, 2s) == std::cv_status::timeout) {
+    LOG(ERROR) << "Timeout Starting GPRC Server";
+  }
+  //_server->Wait();
 
   }
 
@@ -150,7 +156,7 @@ void gRPCController::Run(uint16_t port) {
   {
     if(_loopThread.joinable()) {
         _server->Shutdown();
-        
+
         _loopThread.join();
     }
   }

@@ -46,3 +46,11 @@ https://sonny.4lima.de/ -> Höhen Profile
 
 ## Help full links
 https://github.com/faaxm/exmpl-cmake-grpc
+https://github.com/flutter/flutter/issues/27076#issuecomment-822740442
+
+
+## Things to descript
+
+echo 'export PATH="$HOME/develop/flutter/bin:$PATH"' >> ~/.bash_profile
+echo 'export PATH="$PATH":"$HOME/.pub-cache/bin"' >> ~/.bash_profile
+echo 'alias flutter=~/flutter/bin/flutter' >> ~/.bash_aliases

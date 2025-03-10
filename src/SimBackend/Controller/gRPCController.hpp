@@ -14,6 +14,7 @@ private:
     std::unique_ptr<grpc::Server> _server;
     std::condition_variable _cv;
     std::mutex _mutex;
+    uint16_t _tcpServerPort;
     void Loop();
 public:
     gRPCController(/* args */);
