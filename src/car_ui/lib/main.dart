@@ -1,3 +1,4 @@
+import 'package:car_ui/services/backendconnector.dart';
 import 'package:car_ui/services/helloworld.pbgrpc.dart';
 import 'package:car_ui/shared/app_config.dart';
 import 'package:car_ui/ui/mb_tiles_page.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    BackendConnector.instance.init();
     return MaterialApp(
         title: 'CarPC Main',
         theme: ThemeData(
@@ -70,8 +72,9 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.black,
             body: Stack(children: [
               PageViewExample(),
-              OverlayWindowMne(top: 30,)
-
+              OverlayWindowMne(
+                top: 30,
+              )
             ] //const MainPage(), //const MbTilesPage(title: 'Mainpage'),
                 )));
   }

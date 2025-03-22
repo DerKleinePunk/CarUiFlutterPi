@@ -1,3 +1,4 @@
+import 'package:car_ui/services/backendconnector.dart';
 import 'package:car_ui/services/carpcconnector.dart';
 import 'package:car_ui/services/generated_carpcconnector.dart';
 import 'package:car_ui/services/greeterservicehandler.dart';
@@ -76,19 +77,10 @@ class _OverlayWindowMne extends State<OverlayWindowMne> {
                                   size: 50,
                                 ),
                                 onTap: () async {
-                                  final greeterService =
-                                      GreeterServiceHandler.unixPort(
-                                          "/tmp/SimBackend.sock");
-                                  final request = HelloRequest()
-                                    ..name = 'flutter';
                                   String message = "empty";
                                   try {
-                                    final response =
-                                        await greeterService.sayHello(request);
-                                    message = response.message;
-                                    _responseStream = greeterService
-                                        .sayHelloStreamReply(request);
-                                    _responseStream?.listen(_newDataFromStream);
+                                    message = await BackendConnector.instance
+                                        .sayHello("Flutter");
                                   } on GrpcError catch (exp) {
                                     message = exp.message ?? exp.codeName;
                                   }

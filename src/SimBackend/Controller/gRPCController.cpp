@@ -35,7 +35,8 @@ class HelloReactor final
     : public grpc::ServerWriteReactor<helloworld::HelloReply> {
  public:
   HelloReactor()
-      : messages_to_send_(3) {
+      : messages_to_send_(3),
+      _newMessageWait(_mutexNewMessage) {
     res_.set_message(std::string(5, '#'));
     std::cout << "ctor\n";
     Write();
@@ -52,9 +53,9 @@ class HelloReactor final
   void WriteText(const std::string& message) {
     absl::MutexLock lock(&mu_);
     res_.set_message(message);
-    StartWrite(&res_);
-    --messages_to_send_;
-    write_start_time_ = absl::Now();
+    ++messages_to_send_;
+    _cvNewMessage.notify_all();
+
   }
 
   void OnWriteDone(bool ok) override {
@@ -69,8 +70,25 @@ class HelloReactor final
     if (more) {
       Write();
     } else {
-      Finish(grpc::Status::OK);
       std::cout << "Done sending messages\n";
+      if(_stopRequested) {
+        Finish(grpc::Status::OK);
+        return;
+      }
+
+      if(_cvNewMessage.wait_for(_newMessageWait, 2s) == std::cv_status::timeout) {
+        if(!_stopRequested) {
+          messages_to_send_++;
+          res_.set_message("alive");
+          Write();
+        } else {
+          messages_to_send_++;
+          res_.set_message("bye bye");
+          Write();
+        }
+      } else {
+        Write();
+      }
     }
   }
 
@@ -80,11 +98,16 @@ class HelloReactor final
     delete this;
   }
 
+  bool _stopRequested;
  private:
   helloworld::HelloReply res_;
   size_t messages_to_send_;
   std::optional<absl::Time> write_start_time_;
   absl::Mutex mu_;
+
+  std::condition_variable _cvNewMessage;
+  std::mutex _mutexNewMessage;
+  std::unique_lock<std::mutex> _newMessageWait;
 };
 
 
@@ -172,14 +195,20 @@ void gRPCController::Run(uint16_t port) {
   void gRPCController::Stop()
   {
     if(_loopThread.joinable()) {
-        _server->Shutdown();
+      _stopRequested = true;
+      if(g_helloReactor != nullptr) {
+        g_helloReactor->_stopRequested = true;
+      }
+      _server->Shutdown();
 
-        _loopThread.join();
+      _loopThread.join();
     }
   }
 
   void gRPCController::SendTestMessage() {
     if(g_helloReactor == nullptr) return;
+
+    LOG(DEBUG) << "Try add New Message";
 
     auto text = std::string("From Console");
     g_helloReactor->WriteText(text);

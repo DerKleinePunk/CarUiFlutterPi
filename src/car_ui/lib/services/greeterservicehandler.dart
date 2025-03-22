@@ -28,15 +28,17 @@ class GreeterServiceHandler extends GreeterClient {
   }
 
   GreeterServiceHandler.unixPort(String unixPort)
-    : super(
-            ClientChannel(
-              InternetAddress(unixPort, type: InternetAddressType.unix),
-              options: const ChannelOptions(
-                credentials: ChannelCredentials.insecure(),
-              ),
+      : super(
+          ClientChannel(
+            InternetAddress(unixPort, type: InternetAddressType.unix),
+            options: const ChannelOptions(
+              credentials: ChannelCredentials.insecure(),
+              idleTimeout: Duration(seconds: 60),
+
             ),
-            options: CallOptions(
-              timeout: const Duration(seconds: 5),
-            ),
-          );
+          ),
+          options: CallOptions(
+            timeout: const Duration(seconds: 60),
+          ),
+        );
 }
