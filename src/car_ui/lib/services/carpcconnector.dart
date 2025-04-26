@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:io' show Platform;
 import 'package:ffi/ffi.dart' as ffi;
+import 'package:flutter/material.dart';
 
 import 'generated_carpcconnector.dart';
 
@@ -22,7 +23,12 @@ final DynamicLibrary _dylib = () {
 final CarPCNativeLibrary _bindings = CarPCNativeLibrary(_dylib);
 
 class CarPcConnector {
-   String get version {
-    return _bindings.library_version.toString();
+  String get version {
+    try {
+      return _bindings.library_version.toString();
+    } catch (exp) {
+      debugPrint("CarPcConnector Error $exp");
+      return "Error";
+    }
   }
 }

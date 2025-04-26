@@ -16,6 +16,7 @@ private:
     std::mutex _mutex;
     uint16_t _tcpServerPort;
     bool _stopRequested;
+    grpc::HealthCheckServiceInterface* _health_check_service;
     void Loop();
 public:
     gRPCController(/* args */);

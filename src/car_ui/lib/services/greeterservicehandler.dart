@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:car_ui/services/helloworld.pbgrpc.dart';
+import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
 
 class GreeterServiceHandler extends GreeterClient {
@@ -30,15 +31,19 @@ class GreeterServiceHandler extends GreeterClient {
   GreeterServiceHandler.unixPort(String unixPort)
       : super(
           ClientChannel(
-            InternetAddress(unixPort, type: InternetAddressType.unix),
-            options: const ChannelOptions(
-              credentials: ChannelCredentials.insecure(),
-              idleTimeout: Duration(seconds: 60),
-
-            ),
-          ),
+              InternetAddress(unixPort, type: InternetAddressType.unix),
+              options: const ChannelOptions(
+                credentials: ChannelCredentials.insecure(),
+                idleTimeout: Duration(seconds: 60),
+                keepAlive:  ClientKeepAliveOptions()
+              ),
+              channelShutdownHandler: _channelError),
           options: CallOptions(
             timeout: const Duration(seconds: 60),
           ),
         );
+}
+
+void _channelError() {
+  debugPrint("hello Stream Error");
 }

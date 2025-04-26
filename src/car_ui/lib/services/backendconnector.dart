@@ -20,7 +20,8 @@ class BackendConnector {
   void init() {
     final request = HelloRequest()..name = "UI";
     try {
-      _responseStream = _greeterService.sayHelloStreamReply(request);
+      _responseStream = _greeterService.sayHelloStreamReply(request,
+          options: CallOptions(timeout: Duration(hours: 60)));
       _responseStream!.listen(_newDataFromHelloStream);
       _responseStream!.handleError(_helloStreamError);
       //_responseStream?.asBroadcastStream(_newDataFromHelloStream, _canceledHelloStream)

@@ -43,6 +43,8 @@ int main(int argc, char** argv)
     el::Helpers::setThreadName("Main");
     el::Loggers::getLogger(ELPP_DEFAULT_LOGGER);
 
+    LOG(INFO) << "Starting Sim Backend " << PROJECT_VER;
+
     /*unlink(socketPath); //If already exits
     server_socket = socket(AF_UNIX, SOCK_STREAM, PF_UNSPEC);
     sockaddr_un name;
@@ -76,10 +78,10 @@ int main(int argc, char** argv)
     std::string input;
     std::cin >> input;
     while(input != "q") {
-        std::cin >> input;
         if(input == "s") {
-            test.SendTestMessage();
+           test.SendTestMessage();
         }
+        std::cin >> input;
     }
 
     test.Stop();
