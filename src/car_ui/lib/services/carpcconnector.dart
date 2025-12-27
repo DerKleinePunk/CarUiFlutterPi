@@ -1,6 +1,5 @@
 import 'dart:ffi';
 import 'dart:io' show Platform;
-import 'package:ffi/ffi.dart' as ffi;
 import 'package:flutter/material.dart';
 
 import 'generated_carpcconnector.dart';

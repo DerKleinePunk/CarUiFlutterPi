@@ -1,4 +1,3 @@
-import 'package:car_ui/ui/mid_circle_radial_gauge.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';

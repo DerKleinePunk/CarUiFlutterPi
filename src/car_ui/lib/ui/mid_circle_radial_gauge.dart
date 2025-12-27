@@ -66,7 +66,7 @@ class _MyCustomRadialGaugeState extends State<MyCustomRadialGauge>
                 height: screenHeight * 0.027,
                 color: Colors.transparent,
               ),
-              Container(
+              SizedBox(
                   height: screenHeight * 0.04,
                   child: Text('Title', style: TextStyle(fontSize: 22.0)))
             ],

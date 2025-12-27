@@ -1,7 +1,5 @@
 import 'package:car_ui/services/backendconnector.dart';
 import 'package:car_ui/services/carpcconnector.dart';
-import 'package:car_ui/services/generated_carpcconnector.dart';
-import 'package:car_ui/services/greeterservicehandler.dart';
 import 'package:car_ui/services/helloworld.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
@@ -16,7 +14,7 @@ class OverlayWindowMne extends StatefulWidget {
 
 class _OverlayWindowMne extends State<OverlayWindowMne> {
   bool _exanded = false;
-  double _windowWidth = 100;
+  final double _windowWidth = 100;
   ResponseStream<HelloReply>? _responseStream;
 
   @override

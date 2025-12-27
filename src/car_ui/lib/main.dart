@@ -1,8 +1,5 @@
 import 'package:car_ui/services/backendconnector.dart';
-import 'package:car_ui/services/helloworld.pbgrpc.dart';
 import 'package:car_ui/shared/app_config.dart';
-import 'package:car_ui/ui/mb_tiles_page.dart';
-import 'package:car_ui/ui/overlay_window_example.dart';
 import 'package:car_ui/ui/overlay_window_mne.dart';
 import 'package:car_ui/ui/page_view_example.dart';
 import 'package:flutter/material.dart';

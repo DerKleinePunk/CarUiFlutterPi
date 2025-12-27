@@ -1,13 +1,14 @@
+// This is a generated file - do not edit.
 //
-//  Generated code. Do not modify.
-//  source: helloworld.proto
-//
-// @dart = 2.12
+// Generated from helloworld.proto.
+
+// @dart = 3.3
 
 // ignore_for_file: annotate_overrides, camel_case_types, comment_references
-// ignore_for_file: constant_identifier_names, library_prefixes
-// ignore_for_file: non_constant_identifier_names, prefer_final_fields
-// ignore_for_file: unnecessary_import, unnecessary_this, unused_import
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: curly_braces_in_flow_control_structures
+// ignore_for_file: deprecated_member_use_from_same_package, library_prefixes
+// ignore_for_file: non_constant_identifier_names, prefer_relative_imports
 
 import 'dart:async' as $async;
 import 'dart:core' as $core;
@@ -19,38 +20,60 @@ import 'helloworld.pb.dart' as $0;
 
 export 'helloworld.pb.dart';
 
+/// The greeting service definition.
 @$pb.GrpcServiceName('helloworld.Greeter')
 class GreeterClient extends $grpc.Client {
-  static final _$sayHello = $grpc.ClientMethod<$0.HelloRequest, $0.HelloReply>(
-      '/helloworld.Greeter/SayHello',
-      ($0.HelloRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.HelloReply.fromBuffer(value));
-  static final _$sayHelloStreamReply = $grpc.ClientMethod<$0.HelloRequest, $0.HelloReply>(
-      '/helloworld.Greeter/SayHelloStreamReply',
-      ($0.HelloRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.HelloReply.fromBuffer(value));
-  static final _$sayHelloBidiStream = $grpc.ClientMethod<$0.HelloRequest, $0.HelloReply>(
-      '/helloworld.Greeter/SayHelloBidiStream',
-      ($0.HelloRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.HelloReply.fromBuffer(value));
+  /// The hostname for this service.
+  static const $core.String defaultHost = '';
 
-  GreeterClient($grpc.ClientChannel channel,
-      {$grpc.CallOptions? options,
-      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
-      : super(channel, options: options,
-        interceptors: interceptors);
+  /// OAuth scopes needed for the client.
+  static const $core.List<$core.String> oauthScopes = [
+    '',
+  ];
 
-  $grpc.ResponseFuture<$0.HelloReply> sayHello($0.HelloRequest request, {$grpc.CallOptions? options}) {
+  GreeterClient(super.channel, {super.options, super.interceptors});
+
+  /// Sends a greeting
+  $grpc.ResponseFuture<$0.HelloReply> sayHello(
+    $0.HelloRequest request, {
+    $grpc.CallOptions? options,
+  }) {
     return $createUnaryCall(_$sayHello, request, options: options);
   }
 
-  $grpc.ResponseStream<$0.HelloReply> sayHelloStreamReply($0.HelloRequest request, {$grpc.CallOptions? options}) {
-    return $createStreamingCall(_$sayHelloStreamReply, $async.Stream.fromIterable([request]), options: options);
+  $grpc.ResponseStream<$0.HelloReply> sayHelloStreamReply(
+    $0.HelloRequest request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createStreamingCall(
+        _$sayHelloStreamReply, $async.Stream.fromIterable([request]),
+        options: options);
   }
 
-  $grpc.ResponseStream<$0.HelloReply> sayHelloBidiStream($async.Stream<$0.HelloRequest> request, {$grpc.CallOptions? options}) {
-    return $createStreamingCall(_$sayHelloBidiStream, request, options: options);
+  $grpc.ResponseStream<$0.HelloReply> sayHelloBidiStream(
+    $async.Stream<$0.HelloRequest> request, {
+    $grpc.CallOptions? options,
+  }) {
+    return $createStreamingCall(_$sayHelloBidiStream, request,
+        options: options);
   }
+
+  // method descriptors
+
+  static final _$sayHello = $grpc.ClientMethod<$0.HelloRequest, $0.HelloReply>(
+      '/helloworld.Greeter/SayHello',
+      ($0.HelloRequest value) => value.writeToBuffer(),
+      $0.HelloReply.fromBuffer);
+  static final _$sayHelloStreamReply =
+      $grpc.ClientMethod<$0.HelloRequest, $0.HelloReply>(
+          '/helloworld.Greeter/SayHelloStreamReply',
+          ($0.HelloRequest value) => value.writeToBuffer(),
+          $0.HelloReply.fromBuffer);
+  static final _$sayHelloBidiStream =
+      $grpc.ClientMethod<$0.HelloRequest, $0.HelloReply>(
+          '/helloworld.Greeter/SayHelloBidiStream',
+          ($0.HelloRequest value) => value.writeToBuffer(),
+          $0.HelloReply.fromBuffer);
 }
 
 @$pb.GrpcServiceName('helloworld.Greeter')
@@ -81,15 +104,22 @@ abstract class GreeterServiceBase extends $grpc.Service {
         ($0.HelloReply value) => value.writeToBuffer()));
   }
 
-  $async.Future<$0.HelloReply> sayHello_Pre($grpc.ServiceCall call, $async.Future<$0.HelloRequest> request) async {
-    return sayHello(call, await request);
+  $async.Future<$0.HelloReply> sayHello_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.HelloRequest> $request) async {
+    return sayHello($call, await $request);
   }
 
-  $async.Stream<$0.HelloReply> sayHelloStreamReply_Pre($grpc.ServiceCall call, $async.Future<$0.HelloRequest> request) async* {
-    yield* sayHelloStreamReply(call, await request);
+  $async.Future<$0.HelloReply> sayHello(
+      $grpc.ServiceCall call, $0.HelloRequest request);
+
+  $async.Stream<$0.HelloReply> sayHelloStreamReply_Pre(
+      $grpc.ServiceCall $call, $async.Future<$0.HelloRequest> $request) async* {
+    yield* sayHelloStreamReply($call, await $request);
   }
 
-  $async.Future<$0.HelloReply> sayHello($grpc.ServiceCall call, $0.HelloRequest request);
-  $async.Stream<$0.HelloReply> sayHelloStreamReply($grpc.ServiceCall call, $0.HelloRequest request);
-  $async.Stream<$0.HelloReply> sayHelloBidiStream($grpc.ServiceCall call, $async.Stream<$0.HelloRequest> request);
+  $async.Stream<$0.HelloReply> sayHelloStreamReply(
+      $grpc.ServiceCall call, $0.HelloRequest request);
+
+  $async.Stream<$0.HelloReply> sayHelloBidiStream(
+      $grpc.ServiceCall call, $async.Stream<$0.HelloRequest> request);
 }
